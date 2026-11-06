@@ -1,0 +1,446 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}JobTrack{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+       <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    {% set show_intro = session.pop('show_intro', False) %}
+
+
+    <!-- CINEMATIC INTRO -->
+    {% if current_user.is_authenticated and show_intro %}
+
+    <div id="intro-screen">
+
+        <div class="intro-glow intro-glow-one"></div>
+        <div class="intro-glow intro-glow-two"></div>
+
+        <div class="intro-content">
+
+            <div class="intro-logo">
+
+                <div class="logo-symbol">
+                    <span class="logo-symbol-inner"></span>
+                </div>
+
+            </div>
+
+            <div class="intro-brand">
+
+                <span class="intro-brand-text">JobTrack</span>
+                <span class="intro-brand-dot">.</span>
+
+            </div>
+
+            <div class="intro-line"></div>
+
+            <p class="intro-tagline">
+                Your career. Your journey.
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    {% if current_user.is_authenticated %}
+
+
+    <!-- MAIN APPLICATION -->
+    <div class="app-container {% if show_intro %}intro-dashboard-reveal{% endif %}">
+
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+
+            <a href="{{ url_for('dashboard') }}" class="brand">
+
+                <div class="brand-icon">
+    <img
+        src="{{ url_for('static', filename='images/jobtrack-logo.svg') }}"
+        alt="JobTrack Logo"
+        class="brand-logo"
+    >
+</div>
+
+                <span class="brand-name">
+                    JobTrack<span class="brand-dot">.</span>
+                </span>
+
+            </a>
+
+
+            <div class="sidebar-label" data-i18n="workspace">
+                WORKSPACE
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+
+                <a
+                    href="{{ url_for('dashboard') }}"
+                    class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"
+                >
+
+                    <i data-lucide="layout-dashboard"></i>
+
+                    <span data-i18n="dashboard">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="{{ url_for('applications') }}"
+                    class="nav-link {% if request.endpoint in ['applications', 'add_application', 'edit_application'] %}active{% endif %}"
+                >
+
+                    <i data-lucide="files"></i>
+
+                    <span data-i18n="applications">
+                        Applications
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="{{ url_for('kanban') }}"
+                    class="nav-link {% if request.endpoint == 'kanban' %}active{% endif %}"
+                >
+
+                    <i data-lucide="columns-3"></i>
+
+                    <span data-i18n="kanban">
+                        Kanban Board
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="{{ url_for('interviews') }}"
+                    class="nav-link {% if request.endpoint == 'interviews' %}active{% endif %}"
+                >
+
+                    <i data-lucide="calendar-days"></i>
+
+                    <span data-i18n="interviews">
+                        Interviews
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="{{ url_for('analytics') }}"
+                    class="nav-link {% if request.endpoint == 'analytics' %}active{% endif %}"
+                >
+
+                    <i data-lucide="chart-no-axes-combined"></i>
+
+                    <span data-i18n="analytics">
+                        Analytics
+                    </span>
+
+                </a>
+
+
+            </nav>
+
+
+            <!-- SIDEBAR BOTTOM -->
+            <div class="sidebar-bottom">
+
+
+                <a
+                    href="{{ url_for('settings') }}"
+                    class="nav-link {% if request.endpoint == 'settings' %}active{% endif %}"
+                >
+
+                    <i data-lucide="settings"></i>
+
+                    <span data-i18n="settings">
+                        Settings
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    class="nav-link logout-link"
+                >
+
+                    <i data-lucide="log-out"></i>
+
+                    <span data-i18n="logout">
+                        Logout
+                    </span>
+
+                </a>
+
+
+                <div class="sidebar-profile">
+
+                    <div class="avatar">
+                        {{ current_user.name[0]|upper }}
+                    </div>
+
+                    <div class="profile-info">
+
+                        <strong>{{ current_user.name }}</strong>
+
+                        <span data-i18n="jobseeker">
+                            Job Seeker
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+
+            <header class="topbar">
+
+
+                <div class="breadcrumb">
+
+                    <span data-i18n="workspace">
+                        Workspace
+                    </span>
+
+                    <i data-lucide="chevron-right"></i>
+
+                    <strong>
+                        {% block page_name %}Dashboard{% endblock %}
+                    </strong>
+
+                </div>
+
+
+                <div class="topbar-right">
+
+
+                    <!-- LANGUAGE TOGGLE -->
+                    <div class="language-switch">
+
+                        <button
+                            id="language-toggle"
+                            class="mini-toggle language-toggle"
+                            type="button"
+                            title="Change language"
+                        >
+
+                            <span
+                                class="language-option active"
+                                id="lang-en"
+                            >
+                                EN
+                            </span>
+
+                            <span class="language-divider">
+                                |
+                            </span>
+
+                            <span
+                                class="language-option"
+                                id="lang-kn"
+                            >
+                                ಕನ್ನಡ
+                            </span>
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- THEME TOGGLE -->
+                    <button
+                id="theme-toggle"
+                class="theme-toggle"
+                type="button"
+                title="Switch theme"
+            >
+
+                <span class="theme-toggle-track">
+
+                    <span class="theme-toggle-thumb">
+
+                        <i
+                            data-lucide="sun"
+                            class="sun-icon"
+                        ></i>
+
+                        <i
+                            data-lucide="moon"
+                            class="moon-icon"
+                        ></i>
+
+                    </span>
+
+                </span>
+
+            </button>
+
+
+            <div class="topbar-avatar">
+                {{ current_user.name[0]|upper }}
+            </div>
+
+
+        </div>
+
+    </header>
+
+
+    <!-- FLASH MESSAGES -->
+    <div class="flash-container">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% for category, message in messages %}
+
+                <div class="flash-message {{ category }}">
+
+                    <span>{{ message }}</span>
+
+                    <button
+                        class="flash-close"
+                        type="button"
+                        onclick="this.parentElement.remove()"
+                    >
+                        &times;
+                    </button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endwith %}
+
+    </div>
+
+
+    <!-- PAGE CONTENT -->
+    <div class="page-content">
+
+        {% block content %}{% endblock %}
+
+    </div>
+
+
+    </main>
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- AUTH PAGES -->
+    <main class="auth-main">
+
+
+        <div class="auth-flash-container">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+
+                {% for category, message in messages %}
+
+                    <div class="flash-message {{ category }}">
+
+                        <span>{{ message }}</span>
+
+                        <button
+                            class="flash-close"
+                            type="button"
+                            onclick="this.parentElement.remove()"
+                        >
+                            &times;
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            {% endwith %}
+
+        </div>
+
+
+        {% block auth_content %}{% endblock %}
+
+
+    </main>
+
+
+    {% endif %}
+
+
+    <!-- JAVASCRIPT -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+
+    <script>
+
+        if (typeof lucide !== "undefined") {
+            lucide.createIcons();
+        }
+
+        const dateElement = document.getElementById("current-date");
+
+        if (dateElement) {
+
+            dateElement.textContent = new Date().toLocaleDateString(
+                "en-US",
+                {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric"
+                }
+            );
+
+        }
+
+    </script>
+
+
+</body>
+</html>

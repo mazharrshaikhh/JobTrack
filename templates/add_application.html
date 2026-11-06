@@ -1,0 +1,322 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+{% if edit_mode %}Edit Application{% else %}Add Application{% endif %} | JobTrack
+{% endblock %}
+
+{% block page_name %}
+{% if edit_mode %}Edit Application{% else %}Add Application{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1 class="page-title">
+            {% if edit_mode %}
+                Edit Application
+            {% else %}
+                Add New Application
+            {% endif %}
+        </h1>
+
+        <p class="page-subtitle">
+            {% if edit_mode %}
+                Update the details of your job application.
+            {% else %}
+                Keep all your job application details organized.
+            {% endif %}
+        </p>
+    </div>
+
+    <a href="{{ url_for('applications') }}" class="btn btn-secondary">
+        <i data-lucide="arrow-left"></i>
+        Back to Applications
+    </a>
+
+</div>
+
+<div class="form-page-container">
+
+    <div class="card application-form-card">
+
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Job Details</h2>
+                <p class="card-description">
+                    Enter the information about the job you applied for.
+                </p>
+            </div>
+
+            <div class="stat-icon blue">
+                <i data-lucide="briefcase-business"></i>
+            </div>
+        </div>
+
+        <form method="POST" class="application-form">
+
+            <!-- Company Name -->
+
+            <div class="form-group">
+
+                <label class="form-label" for="company">
+                    Company Name <span class="required-star">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="company"
+                    name="company"
+                    class="form-control"
+                    placeholder="e.g. Infosys, TCS, Wipro"
+                    value="{{ application.company if application else '' }}"
+                    required
+                >
+
+            </div>
+
+            <!-- Position -->
+
+            <div class="form-group">
+
+                <label class="form-label" for="position">
+                    Job Position <span class="required-star">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="position"
+                    name="position"
+                    class="form-control"
+                    placeholder="e.g. Python Developer, Software Engineer"
+                    value="{{ application.position if application else '' }}"
+                    required
+                >
+
+            </div>
+
+            <!-- Location -->
+
+            <div class="form-group">
+
+                <label class="form-label" for="location">
+                    Job Location
+                </label>
+
+                <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    class="form-control"
+                    placeholder="e.g. Bengaluru, Karnataka"
+                    value="{{ application.location if application else '' }}"
+            >
+
+            </div>
+
+            <!-- Job Type -->
+
+            <div class="form-group">
+
+                <label class="form-label" for="job_type">
+                    Job Type
+                </label>
+
+                <select id="job_type" name="job_type" class="form-control">
+
+                    <option value="">Select Job Type</option>
+
+                    <option value="Full-time"
+                    {% if application and application.job_type == "Full-time" %}selected{% endif %}>
+                        Full-time
+                    </option>
+
+                    <option value="Part-time"
+                    {% if application and application.job_type == "Part-time" %}selected{% endif %}>
+                        Part-time
+                    </option>
+
+                    <option value="Internship"
+                    {% if application and application.job_type == "Internship" %}selected{% endif %}>
+                        Internship
+                    </option>
+
+                    <option value="Contract"
+                    {% if application and application.job_type == "Contract" %}selected{% endif %}>
+                        Contract
+                    </option>
+
+                    <option value="Remote"
+                    {% if application and application.job_type == "Remote" %}selected{% endif %}>
+                        Remote
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- Salary -->
+
+            <div class="form-group">
+
+                <label class="form-label" for="salary">
+                    Expected / Offered Salary
+                </label>
+
+                <input
+                    type="text"
+                    id="salary"
+                    name="salary"
+                    class="form-control"
+                    placeholder="e.g. 3-5 LPA or ₹25,000/month"
+                    value="{{ application.salary if application else '' }}"
+                >
+
+            </div>
+
+            <!-- Job Link -->
+
+            <div class="form-group">
+
+                <label class="form-label" for="job_link">
+                    Job Posting URL
+                </label>
+
+                <input
+                    type="url"
+                    id="job_link"
+                    name="job_link"
+                    class="form-control"
+                    placeholder="https://example.com/job"
+                    value="{{ application.job_link if application else '' }}"
+                >
+
+            </div>
+
+            <!-- Application Date -->
+
+            <div class="form-group">
+
+                <label class="form-label" for="applied_date">
+                    Date Applied
+                </label>
+
+                <input
+                    type="date"
+                    id="applied_date"
+                    name="applied_date"
+                    class="form-control"
+                {% if application %}
+                    value="{{ application.applied_date.strftime('%Y-%m-%d') }}"
+                {% endif %}
+                >
+
+            </div>
+
+            <!-- Application Status -->
+
+            <div class="form-group">
+
+                <label class="form-label" for="status">
+                    Application Status
+                </label>
+
+                <select id="status" name="status" class="form-control">
+
+                    <option value="Applied"
+                    {% if not application or application.status == "Applied" %}selected{% endif %}>
+                        Applied
+                    </option>
+
+                    <option value="Assessment"
+                    {% if application and application.status == "Assessment" %}selected{% endif %}>
+                        Assessment
+                    </option>
+
+                    <option value="Interview"
+                    {% if application and application.status == "Interview" %}selected{% endif %}>
+                        Interview
+                    </option>
+
+                    <option value="Offer"
+                    {% if application and application.status == "Offer" %}selected{% endif %}>
+                        Offer
+                    </option>
+
+                    <option value="Rejected"
+                    {% if application and application.status == "Rejected" %}selected{% endif %}>
+                        Rejected
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- Notes -->
+
+            <div class="form-group">
+
+                <label class="form-label" for="notes">
+                    Notes & Additional Information
+                </label>
+
+                <textarea
+                    id="notes"
+                    name="notes"
+            class="form-control"
+                rows="5"
+                placeholder="Add recruiter details, interview preparation notes, follow-up information..."
+            >{{ application.notes if application else '' }}</textarea>
+
+            </div>
+
+            <!-- Form Buttons -->
+
+            <div class="form-actions">
+
+                <a href="{{ url_for('applications') }}" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+
+                    {% if edit_mode %}
+                        <i data-lucide="save"></i>
+                        Save Changes
+                    {% else %}
+                        <i data-lucide="plus-circle"></i>
+                        Save Application
+                    {% endif %}
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- Helpful Tip -->
+
+    <div class="form-tip">
+
+        <div class="form-tip-icon">
+            <i data-lucide="lightbulb"></i>
+        </div>
+
+        <div>
+            <strong>Pro Tip</strong>
+
+            <p>
+                Keep your application notes updated with recruiter conversations,
+                interview feedback and follow-up dates.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

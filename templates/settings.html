@@ -1,0 +1,232 @@
+
+{% extends "base.html" %}
+
+{% block title %}Settings | JobTrack{% endblock %}
+
+{% block page_name %}Settings{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Settings</h1>
+        <p class="page-subtitle">
+            Manage your profile and account information.
+        </p>
+    </div>
+</div>
+
+<div class="settings-grid">
+
+    <!-- Profile Settings -->
+
+    <div class="card">
+
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Personal Information</h2>
+                <p class="card-description">
+                    Update your personal profile details.
+                </p>
+            </div>
+
+            <div class="stat-icon blue">
+                <i data-lucide="user-round"></i>
+            </div>
+        </div>
+
+        <!-- Profile Avatar -->
+
+        <div class="settings-profile">
+
+            <div class="settings-avatar">
+                {{ current_user.name[0]|upper }}
+            </div>
+
+            <div class="settings-profile-info">
+                <strong>{{ current_user.name }}</strong>
+                <span>Job Seeker</span>
+            </div>
+
+        </div>
+
+        <!-- Profile Form -->
+
+        <form method="POST" class="settings-form">
+
+            <div class="form-group">
+
+                <label for="name" class="form-label">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    class="form-control"
+                    value="{{ current_user.name }}"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="email" class="form-label">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    class="form-control"
+                    value="{{ current_user.email }}"
+                    readonly
+                >
+
+                <small class="form-help">
+                    Email address cannot be changed at the moment.
+                </small>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="created_at" class="form-label">
+                    Account Created
+                </label>
+
+                <input
+                    type="text"
+                    id="created_at"
+                    class="form-control"
+                    value="{{ current_user.created_at.strftime('%d %B %Y') }}"
+                readonly
+            >
+
+            </div>
+
+            <div class="form-actions">
+
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="save"></i>
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- Account Information -->
+
+    <div class="card">
+
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Account Information</h2>
+                <p class="card-description">
+                    Overview of your JobTrack account.
+                </p>
+            </div>
+
+            <div class="stat-icon purple">
+                <i data-lucide="shield-check"></i>
+            </div>
+        </div>
+
+        <div class="settings-info-list">
+
+            <div class="settings-info-item">
+                <div class="settings-info-icon blue">
+                    <i data-lucide="user-check"></i>
+                </div>
+
+                <div>
+                    <strong>Account Status</strong>
+                    <span class="account-status-active">
+                        <span class="status-indicator"></span>
+                        Active
+                    </span>
+                </div>
+            </div>
+
+            <div class="settings-info-item">
+                <div class="settings-info-icon green">
+                    <i data-lucide="database"></i>
+                </div>
+
+                <div>
+                    <strong>Data Storage</strong>
+                    <span>Your data is stored in a local SQLite database.</span>
+                </div>
+            </div>
+
+            <div class="settings-info-item">
+                <div class="settings-info-icon purple">
+                    <i data-lucide="lock-keyhole"></i>
+                </div>
+
+                <div>
+                    <strong>Account Security</strong>
+                    <span>Your password is stored as a secure hash.</span>
+                </div>
+            </div>
+
+            <div class="settings-info-item">
+                <div class="settings-info-icon orange">
+                    <i data-lucide="briefcase-business"></i>
+                </div>
+
+                <div>
+                    <strong>Application Ownership</strong>
+                    <span>Your applications are private to your account.</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Logout Card -->
+
+    <div class="card settings-danger-card">
+
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Session</h2>
+                <p class="card-description">
+                    Sign out of your JobTrack account.
+                </p>
+            </div>
+
+            <div class="stat-icon orange">
+                <i data-lucide="log-out"></i>
+            </div>
+        </div>
+
+        <div class="settings-logout">
+
+            <div>
+                <strong>Logout from JobTrack</strong>
+                <p>
+                    You can log in again anytime using your registered email
+                    address and password.
+                </p>
+            </div>
+
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">
+                <i data-lucide="log-out"></i>
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

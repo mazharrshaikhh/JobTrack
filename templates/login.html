@@ -1,0 +1,232 @@
+
+{% extends "base.html" %}
+
+{% block title %}Login | JobTrack{% endblock %}
+
+{% block auth_content %}
+
+<div class="auth-screen">
+
+    <!-- LEFT PANEL -->
+    <section class="auth-panel auth-panel-left">
+
+        <a href="{{ url_for('auth.login') }}" class="auth-brand">
+            <div class="auth-brand-icon">
+                <i data-lucide="briefcase-business"></i>
+            </div>
+
+            <span>JobTrack<span class="brand-dot">.</span></span>
+        </a>
+
+
+        <div class="auth-form-wrapper">
+
+            <div class="auth-heading">
+                <h1 data-i18n="welcome_back">Welcome back!</h1>
+
+                <p data-i18n="login_subtitle">
+                    Continue your journey towards your dream career.
+                </p>
+            </div>
+
+
+            <form method="POST" action="{{ url_for('auth.login') }}" class="auth-form">
+
+                <div class="form-group">
+                    <label for="email" data-i18n="email">Email Address</label>
+
+                    <div class="input-wrapper">
+                        <i data-lucide="mail"></i>
+
+                        <input type="email"
+                               id="email"
+                               name="email"
+                               placeholder="Enter your email"
+                               autocomplete="email"
+                               required>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+
+                    <div class="label-row">
+                        <label for="password" data-i18n="password">Password</label>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <i data-lucide="lock-keyhole"></i>
+
+                        <input type="password"
+                               id="password"
+                               name="password"
+                               placeholder="Enter your password"
+                               autocomplete="current-password"
+                               required>
+
+                        <button type="button"
+                                class="password-toggle"
+                                aria-label="Show password">
+                            <i data-lucide="eye"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="auth-options">
+
+                    <label class="remember-option">
+                        <input type="checkbox" name="remember">
+
+                        <span data-i18n="remember">Remember me</span>
+                    </label>
+
+                    <a href="#" class="forgot-link" data-i18n="forgot">
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <button type="submit" class="auth-submit-btn">
+
+                    <span data-i18n="login">Log In</span>
+
+                    <i data-lucide="arrow-right"></i>
+
+                </button>
+
+
+            </form>
+
+
+            <div class="auth-divider">
+                <span data-i18n="or">OR</span>
+            </div>
+
+
+            <div class="auth-bottom-text">
+
+                <span data-i18n="no_account">Don't have an account?</span>
+
+                <a href="{{ url_for('auth.register') }}"
+                   data-i18n="create_account">
+                    Create account
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="auth-footer">
+            <span>© 2026 JobTrack</span>
+
+            <div>
+                <a href="#" data-i18n="privacy">Privacy</a>
+                <a href="#" data-i18n="terms">Terms</a>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- RIGHT PANEL -->
+    <section class="auth-panel auth-panel-right">
+
+        <div class="auth-showcase-bg"></div>
+
+        <div class="showcase-top">
+
+            <div class="showcase-logo">
+                <div class="showcase-logo-symbol">
+                    <i data-lucide="briefcase-business"></i>
+                </div>
+
+                <span>JobTrack<span class="brand-dot">.</span></span>
+            </div>
+
+            <span class="showcase-badge">
+                <span class="badge-dot"></span>
+                <span data-i18n="career_platform">Career management platform</span>
+            </span>
+
+        </div>
+
+
+        <div class="showcase-content">
+
+            <div class="showcase-eyebrow" data-i18n="your_future">
+                YOUR FUTURE STARTS HERE
+            </div>
+
+            <h2 data-i18n="showcase_title">
+                Organize your journey.<br>
+                <span>Own your future.</span>
+            </h2>
+
+            <p data-i18n="showcase_desc">
+                Every application is a step forward. Keep your career journey organized, focused and moving.
+            </p>
+
+
+            <!-- FLOATING APPLICATION CARD -->
+            <div class="floating-card">
+
+                <div class="floating-card-top">
+                    <div class="floating-card-icon">
+                        <i data-lucide="building-2"></i>
+                    </div>
+
+                    <div>
+                        <strong>Application Tracker</strong>
+                        <span>Keep everything organized</span>
+                    </div>
+
+                    <span class="floating-card-status">
+                        <i data-lucide="check"></i>
+                    </span>
+                </div>
+
+
+                <div class="floating-card-progress">
+                    <div class="floating-progress-label">
+                        <span>Career progress</span>
+                        <span>100%</span>
+                    </div>
+
+                    <div class="floating-progress-track">
+                        <div class="floating-progress-fill"></div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="showcase-orbit orbit-one"></div>
+            <div class="showcase-orbit orbit-two"></div>
+
+        </div>
+
+
+        <div class="showcase-bottom">
+
+            <div class="showcase-dots">
+                <span class="showcase-dot active"></span>
+                <span class="showcase-dot"></span>
+                <span class="showcase-dot"></span>
+            </div>
+
+            <span data-i18n="made_for_you">
+                Designed for your next opportunity.
+            </span>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

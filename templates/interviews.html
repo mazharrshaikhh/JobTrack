@@ -1,0 +1,296 @@
+
+{% extends "base.html" %}
+
+{% block title %}Interviews | JobTrack{% endblock %}
+
+{% block page_name %}Interviews{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">My Interviews</h1>
+        <p class="page-subtitle">
+            Keep track of companies where you have reached the interview stage.
+        </p>
+    </div>
+
+    <a href="{{ url_for('kanban') }}" class="btn btn-primary">
+        <i data-lucide="columns-3"></i>
+        View Kanban Board
+    </a>
+</div>
+
+<!-- Interview Statistics -->
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Total Interviews</span>
+            <div class="stat-icon purple">
+                <i data-lucide="users"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ interviews|length }}</div>
+        <div class="stat-footer">Companies in interview stage</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Interview Notes</span>
+            <div class="stat-icon blue">
+                <i data-lucide="notebook-pen"></i>
+            </div>
+        </div>
+        <div class="stat-value">
+            {{ interviews|selectattr("notes")|list|length }}
+        </div>
+        <div class="stat-footer">Applications with notes</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Job Locations</span>
+            <div class="stat-icon orange">
+                <i data-lucide="map-pin"></i>
+            </div>
+        </div>
+        <div class="stat-value">
+            {{ interviews|selectattr("location")|list|length }}
+        </div>
+        <div class="stat-footer">Locations specified</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Salary Details</span>
+            <div class="stat-icon green">
+                <i data-lucide="indian-rupee"></i>
+            </div>
+        </div>
+        <div class="stat-value">
+            {{ interviews|selectattr("salary")|list|length }}
+        </div>
+        <div class="stat-footer">Applications with salary info</div>
+    </div>
+
+</div>
+
+<!-- Interview Applications -->
+
+<div class="card">
+
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">Interview Opportunities</h2>
+            <p class="card-description">
+                Review company details and prepare for your next opportunity.
+            </p>
+        </div>
+
+        <span class="kanban-count">{{ interviews|length }}</span>
+    </div>
+
+    {% if interviews %}
+
+    <div class="interview-list">
+
+        {% for application in interviews %}
+
+        <div class="interview-card">
+
+            <!-- Card Header -->
+
+            <div class="interview-card-header">
+
+                <div class="company-cell">
+
+                    <div class="company-logo">
+                        {{ application.company[0]|upper }}
+                    </div>
+
+                    <div class="company-info">
+                        <strong>{{ application.company }}</strong>
+                        <span>{{ application.position }}</span>
+                    </div>
+
+                </div>
+
+                <span class="status-badge status-interview">
+                    <span class="status-indicator"></span>
+                    Interview
+                </span>
+
+            </div>
+
+            <!-- Interview Details -->
+
+            <div class="interview-details-grid">
+
+                <div class="interview-detail">
+
+                    <i data-lucide="calendar-days"></i>
+
+                    <div>
+                        <span>Application Date</span>
+                        <strong>
+                            {{ application.applied_date.strftime('%d %b %Y') }}
+                        </strong>
+                    </div>
+
+                </div>
+
+                {% if application.location %}
+
+                <div class="interview-detail">
+
+                    <i data-lucide="map-pin"></i>
+
+                    <div>
+                        <span>Location</span>
+                        <strong>{{ application.location }}</strong>
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+                {% if application.job_type %}
+
+                <div class="interview-detail">
+
+                    <i data-lucide="briefcase-business"></i>
+
+                    <div>
+                        <span>Job Type</span>
+                        <strong>{{ application.job_type }}</strong>
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+                {% if application.salary %}
+
+                <div class="interview-detail">
+
+                    <i data-lucide="indian-rupee"></i>
+
+                    <div>
+                        <span>Salary</span>
+                        <strong>{{ application.salary }}</strong>
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            <!-- Notes -->
+
+            {% if application.notes %}
+
+            <div class="interview-notes">
+
+                <div class="interview-notes-header">
+                    <i data-lucide="notebook-pen"></i>
+                    <strong>Preparation Notes</strong>
+                </div>
+
+                <p>{{ application.notes }}</p>
+
+            </div>
+
+            {% else %}
+
+            <div class="interview-notes-empty">
+                <i data-lucide="info"></i>
+                No preparation notes added yet.
+                <a href="{{ url_for('edit_application', application_id=application.id) }}">
+                    Add notes
+                </a>
+            </div>
+
+            {% endif %}
+
+            <!-- Actions -->
+
+            <div class="interview-card-footer">
+
+                {% if application.job_link %}
+
+                <a
+                    href="{{ application.job_link }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-secondary btn-sm"
+                >
+                    <i data-lucide="external-link"></i>
+                    View Job Posting
+                </a>
+
+                {% endif %}
+
+                <a
+                    href="{{ url_for('edit_application', application_id=application.id) }}"
+                    class="btn btn-primary btn-sm"
+                >
+                    <i data-lucide="pencil"></i>
+                    Update Details
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+            <i data-lucide="calendar-check"></i>
+        </div>
+
+        <h3>No interviews yet</h3>
+
+        <p>
+            Applications moved to the Interview stage will appear here.
+            Keep applying and stay prepared!
+        </p>
+
+        <a href="{{ url_for('applications') }}" class="btn btn-primary">
+            <i data-lucide="briefcase-business"></i>
+            View Applications
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- Preparation Tip -->
+
+<div class="form-tip">
+
+    <div class="form-tip-icon">
+        <i data-lucide="lightbulb"></i>
+    </div>
+
+    <div>
+        <strong>Interview Preparation Tip</strong>
+        <p>
+            Research the company, revise job-related skills, and keep your
+            interview notes updated before every interview.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

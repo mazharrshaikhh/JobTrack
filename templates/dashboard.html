@@ -1,0 +1,481 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard | JobTrack{% endblock %}
+{% block page_name %}Dashboard{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <!-- Welcome Section -->
+    <div class="dashboard-welcome">
+
+        <div class="welcome-text">
+            <span class="welcome-label">YOUR PERSONAL WORKSPACE</span>
+
+            <h1>
+                Welcome back, {{ current_user.name }}!
+                <span class="wave">👋</span>
+            </h1>
+
+            <p>Manage your career journey with JobTrack.</p>
+        </div>
+
+        <a href="{{ url_for('add_application') }}"
+           class="btn btn-primary add-job-btn">
+            <i data-lucide="plus"></i>
+            Add Application
+        </a>
+
+    </div>
+
+
+    <!-- Statistics Cards -->
+    <div class="dashboard-stats">
+
+        <a href="{{ url_for('applications') }}"
+           class="dashboard-stat-card stat-blue">
+
+            <div class="stat-card-top">
+                <span>Total Applications</span>
+                <div class="stat-icon">
+                    <i data-lucide="briefcase-business"></i>
+                </div>
+            </div>
+
+            <h2 class="stat-value" data-count="{{ total }}">
+                {{ total }}
+            </h2>
+
+            <div class="stat-card-footer">
+                <span>All job applications</span>
+                <i data-lucide="arrow-up-right"></i>
+            </div>
+
+        </a>
+
+
+        <a href="{{ url_for('interviews') }}"
+           class="dashboard-stat-card stat-purple">
+
+            <div class="stat-card-top">
+                <span>Interviews</span>
+                <div class="stat-icon">
+                    <i data-lucide="calendar-check"></i>
+                </div>
+            </div>
+
+            <h2 class="stat-value" data-count="{{ interviews }}">
+                {{ interviews }}
+            </h2>
+
+            <div class="stat-card-footer">
+                <span>Interview opportunities</span>
+                <i data-lucide="arrow-up-right"></i>
+            </div>
+
+        </a>
+
+
+        <a href="{{ url_for('applications', status='Offer') }}"
+           class="dashboard-stat-card stat-green">
+
+            <div class="stat-card-top">
+                <span>Offers Received</span>
+                <div class="stat-icon">
+                    <i data-lucide="trophy"></i>
+                </div>
+            </div>
+
+            <h2 class="stat-value" data-count="{{ offers }}">
+                {{ offers }}
+            </h2>
+
+            <div class="stat-card-footer">
+                <span>Congratulations!</span>
+                <i data-lucide="arrow-up-right"></i>
+            </div>
+
+        </a>
+
+
+        <a href="{{ url_for('applications', status='Rejected') }}"
+           class="dashboard-stat-card stat-orange">
+
+            <div class="stat-card-top">
+                <span>Rejected</span>
+                <div class="stat-icon">
+                    <i data-lucide="ban"></i>
+                </div>
+            </div>
+
+            <h2 class="stat-value" data-count="{{ rejected }}">
+                {{ rejected }}
+            </h2>
+
+            <div class="stat-card-footer">
+                <span>Keep moving forward</span>
+                <i data-lucide="arrow-up-right"></i>
+            </div>
+
+        </a>
+
+    </div>
+
+
+    <!-- Main Dashboard Layout -->
+    <div class="dashboard-main-grid">
+
+        <!-- Application Pipeline -->
+        <div class="dashboard-panel pipeline-panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <h3>Application Pipeline</h3>
+                    <p>Track your progress across different stages.</p>
+                </div>
+
+                <a href="{{ url_for('kanban') }}"
+                   class="btn btn-outline">
+                    View Board
+                    <i data-lucide="arrow-right"></i>
+                </a>
+
+            </div>
+
+
+            <div class="pipeline-list">
+
+                <a href="{{ url_for('applications', status='Applied') }}"
+                   class="pipeline-item">
+
+                    <div class="pipeline-label">
+                        <span class="pipeline-dot dot-blue"></span>
+                        <span>Applied</span>
+                    </div>
+
+                    <strong>{{ applied }}</strong>
+
+                </a>
+
+
+                <a href="{{ url_for('applications', status='Assessment') }}"
+                   class="pipeline-item">
+
+                    <div class="pipeline-label">
+                        <span class="pipeline-dot dot-purple"></span>
+                        <span>Assessment</span>
+                    </div>
+
+                    <strong>{{ assessment }}</strong>
+
+                </a>
+
+
+                <a href="{{ url_for('applications', status='Interview') }}"
+                   class="pipeline-item">
+
+                    <div class="pipeline-label">
+                        <span class="pipeline-dot dot-orange"></span>
+                        <span>Interview</span>
+                    </div>
+
+                    <strong>{{ interviews }}</strong>
+
+                </a>
+
+
+                <a href="{{ url_for('applications', status='Offer') }}"
+                   class="pipeline-item">
+
+                    <div class="pipeline-label">
+                        <span class="pipeline-dot dot-green"></span>
+                        <span>Offer</span>
+                    </div>
+
+                    <strong>{{ offers }}</strong>
+
+                </a>
+
+
+                <a href="{{ url_for('applications', status='Rejected') }}"
+                   class="pipeline-item">
+
+                    <div class="pipeline-label">
+                        <span class="pipeline-dot dot-red"></span>
+                        <span>Rejected</span>
+                    </div>
+
+                    <strong>{{ rejected }}</strong>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Right Side -->
+        <div class="dashboard-side-panels">
+
+            <!-- Offer Rate -->
+            <div class="dashboard-panel offer-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <h3>Offer Rate</h3>
+                        <p>Applications resulting in offers.</p>
+                    </div>
+
+                    <div class="stat-icon stat-icon-green">
+                        <i data-lucide="chart-no-axes-column-increasing"></i>
+                    </div>
+
+                </div>
+
+                <div class="offer-rate-value">
+                    {{ success_rate }}<span>%</span>
+                </div>
+
+                <div class="progress-track">
+                    <div class="progress-fill"
+                         data-progress="{{ success_rate }}">
+                    </div>
+                </div>
+
+                <p class="offer-message">
+                    {% if offers > 0 %}
+                        Great progress! Keep going.
+                    {% else %}
+                        Keep building momentum. Every application is a new opportunity!
+                    {% endif %}
+                </p>
+
+            </div>
+
+
+            <!-- Quick Actions -->
+            <div class="dashboard-panel quick-actions-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <h3>Quick Actions</h3>
+                        <p>Manage your job search.</p>
+                    </div>
+                </div>
+
+
+                <div class="quick-actions-grid">
+
+                    <a href="{{ url_for('add_application') }}"
+                       class="quick-action-card">
+
+                        <div class="quick-action-icon quick-blue">
+                            <i data-lucide="plus-circle"></i>
+                        </div>
+
+                        <span>Add Job</span>
+                        <i data-lucide="arrow-up-right"
+                           class="quick-arrow"></i>
+
+                    </a>
+
+
+                    <a href="{{ url_for('applications') }}"
+                       class="quick-action-card">
+
+                        <div class="quick-action-icon quick-purple">
+                            <i data-lucide="folder-open"></i>
+                        </div>
+
+                        <span>Applications</span>
+                        <i data-lucide="arrow-up-right"
+                           class="quick-arrow"></i>
+
+                    </a>
+
+
+                    <a href="{{ url_for('kanban') }}"
+                       class="quick-action-card">
+
+                        <div class="quick-action-icon quick-green">
+                            <i data-lucide="columns-3"></i>
+                        </div>
+
+                        <span>Kanban Board</span>
+                        <i data-lucide="arrow-up-right"
+                           class="quick-arrow"></i>
+
+                    </a>
+
+
+                    <a href="{{ url_for('analytics') }}"
+                       class="quick-action-card">
+
+                        <div class="quick-action-icon quick-orange">
+                            <i data-lucide="chart-pie"></i>
+                        </div>
+
+                        <span>Analytics</span>
+                        <i data-lucide="arrow-up-right"
+                           class="quick-arrow"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Recent Applications -->
+    <div class="dashboard-panel recent-panel">
+
+        <div class="panel-heading">
+
+            <div>
+                <h3>Recent Applications</h3>
+                <p>Your latest job application activity.</p>
+            </div>
+
+            <a href="{{ url_for('applications') }}"
+               class="btn btn-outline">
+                View All
+                <i data-lucide="arrow-right"></i>
+            </a>
+
+        </div>
+
+
+        {% if recent_applications %}
+
+        <div class="recent-applications-list">
+
+            {% for application in recent_applications %}
+
+            <a href="{{ url_for('edit_application',
+                                 application_id=application.id) }}"
+               class="recent-application-item">
+
+                <div class="company-avatar">
+                    {{ application.company[0]|upper }}
+                </div>
+
+                <div class="recent-job-info">
+
+                    <strong>{{ application.position }}</strong>
+
+                    <span>
+                        {{ application.company }}
+                        {% if application.location %}
+                            · {{ application.location }}
+                        {% endif %}
+                    </span>
+
+                </div>
+
+                <span class="status-badge status-{{ application.status|lower }}">
+                    {{ application.status }}
+                </span>
+
+                <i data-lucide="chevron-right"
+                   class="recent-arrow"></i>
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-applications">
+
+            <div class="empty-icon">
+                <i data-lucide="briefcase-business"></i>
+            </div>
+
+            <h4>No applications yet</h4>
+
+            <p>Your career journey starts here. Add your first application!</p>
+
+            <a href="{{ url_for('add_application') }}"
+               class="btn btn-primary">
+                <i data-lucide="plus"></i>
+                Add Your First Application
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Bottom Feature Cards -->
+    <div class="dashboard-feature-grid">
+
+        <a href="{{ url_for('interviews') }}"
+           class="dashboard-feature-card">
+
+            <div class="feature-icon feature-purple">
+                <i data-lucide="calendar-check"></i>
+            </div>
+
+            <div>
+                <h4>Interview Preparation</h4>
+                <p>Review your interview opportunities and notes.</p>
+            </div>
+
+            <i data-lucide="arrow-up-right"
+               class="feature-arrow"></i>
+
+        </a>
+
+
+        <a href="{{ url_for('analytics') }}"
+           class="dashboard-feature-card">
+
+            <div class="feature-icon feature-blue">
+                <i data-lucide="chart-no-axes-combined"></i>
+            </div>
+
+            <div>
+                <h4>Career Analytics</h4>
+                <p>Explore your job search performance.</p>
+            </div>
+
+            <i data-lucide="arrow-up-right"
+               class="feature-arrow"></i>
+
+        </a>
+
+
+        <a href="{{ url_for('settings') }}"
+           class="dashboard-feature-card">
+
+            <div class="feature-icon feature-green">
+                <i data-lucide="settings"></i>
+            </div>
+
+            <div>
+                <h4>Personal Settings</h4>
+                <p>Manage your profile and preferences.</p>
+            </div>
+
+            <i data-lucide="arrow-up-right"
+               class="feature-arrow"></i>
+
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

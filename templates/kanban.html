@@ -1,0 +1,269 @@
+
+{% extends "base.html" %}
+
+{% block title %}Kanban Board | JobTrack{% endblock %}
+
+{% block page_name %}Kanban Board{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1 class="page-title">Kanban Board</h1>
+        <p class="page-subtitle">
+            Visualize and manage your job application progress.
+        </p>
+    </div>
+
+    <a href="{{ url_for('add_application') }}" class="btn btn-primary">
+        <i data-lucide="plus"></i>
+        Add Application
+    </a>
+
+</div>
+
+<!-- Board Summary -->
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Applied</span>
+            <div class="stat-icon blue">
+                <i data-lucide="send"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ grouped_applications["Applied"]|length }}</div>
+        <div class="stat-footer">Applications submitted</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Assessments</span>
+            <div class="stat-icon orange">
+                <i data-lucide="clipboard-check"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ grouped_applications["Assessment"]|length }}</div>
+        <div class="stat-footer">Tests and assignments</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Interviews</span>
+            <div class="stat-icon purple">
+                <i data-lucide="users"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ grouped_applications["Interview"]|length }}</div>
+        <div class="stat-footer">Interview opportunities</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Offers</span>
+            <div class="stat-icon green">
+                <i data-lucide="trophy"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ grouped_applications["Offer"]|length }}</div>
+        <div class="stat-footer">Offers received</div>
+    </div>
+
+</div>
+
+<!-- Kanban Board -->
+
+<div class="kanban-board">
+
+    {% for status, applications_list in grouped_applications.items() %}
+
+    <div class="kanban-column">
+
+        <!-- Column Header -->
+
+        <div class="kanban-column-header">
+
+            <div class="kanban-column-title">
+
+                {% if status == "Applied" %}
+                    <span class="pipeline-dot blue-dot"></span>
+                {% elif status == "Assessment" %}
+                    <span class="pipeline-dot orange-dot"></span>
+                {% elif status == "Interview" %}
+                    <span class="pipeline-dot purple-dot"></span>
+                {% elif status == "Offer" %}
+                    <span class="pipeline-dot green-dot"></span>
+                {% else %}
+                    <span class="pipeline-dot red-dot"></span>
+                {% endif %}
+
+                <h3>{{ status }}</h3>
+
+                <span class="kanban-count">
+                    {{ applications_list|length }}
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- Cards -->
+
+        <div class="kanban-cards">
+
+            {% if applications_list %}
+
+                {% for application in applications_list %}
+
+                <div class="kanban-card">
+
+                    <!-- Company -->
+
+                    <div class="kanban-card-top">
+
+                        <div class="company-cell">
+
+                            <div class="company-logo">
+                                {{ application.company[0]|upper }}
+                            </div>
+
+                            <div class="company-info">
+                                <strong>{{ application.company }}</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Position -->
+
+                    <h4 class="kanban-position">
+                        {{ application.position }}
+                    </h4>
+
+                    <!-- Details -->
+
+                    <div class="kanban-details">
+
+                        {% if application.location %}
+                        <span>
+                            <i data-lucide="map-pin"></i>
+                            {{ application.location }}
+                        </span>
+                        {% endif %}
+
+                        {% if application.job_type %}
+                        <span>
+                            <i data-lucide="briefcase"></i>
+                            {{ application.job_type }}
+                        </span>
+                        {% endif %}
+
+                    </div>
+
+                    <!-- Applied Date -->
+
+                    <div class="kanban-card-footer">
+
+                        <span class="kanban-date">
+                            <i data-lucide="calendar"></i>
+                            {{ application.applied_date.strftime('%d %b %Y') }}
+                        </span>
+
+                        <a
+                            href="{{ url_for('edit_application', application_id=application.id) }}"
+                            class="action-btn edit-btn"
+                            title="Edit"
+                        >
+                            <i data-lucide="pencil"></i>
+                        </a>
+
+                    </div>
+
+                    <!-- Update Status -->
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('update_status', application_id=application.id) }}"
+                        class="kanban-status-form"
+                    >
+
+                        <label class="form-label">Move to</label>
+
+                        <select
+                            name="status"
+                            class="form-control kanban-status-select"
+                            onchange="this.form.submit()"
+                        >
+
+                            <option value="Applied"
+                            {% if status == "Applied" %}selected{% endif %}>
+                                Applied
+                            </option>
+
+                            <option value="Assessment"
+                            {% if status == "Assessment" %}selected{% endif %}>
+                                Assessment
+                            </option>
+
+                            <option value="Interview"
+                            {% if status == "Interview" %}selected{% endif %}>
+                                Interview
+                            </option>
+
+                            <option value="Offer"
+                            {% if status == "Offer" %}selected{% endif %}>
+                                Offer
+                            </option>
+
+                            <option value="Rejected"
+                            {% if status == "Rejected" %}selected{% endif %}>
+                                Rejected
+                            </option>
+
+                        </select>
+
+                    </form>
+
+                </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="kanban-empty">
+                    <i data-lucide="inbox"></i>
+                    <p>No applications</p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+<!-- Board Tip -->
+
+<div class="form-tip">
+
+    <div class="form-tip-icon">
+        <i data-lucide="lightbulb"></i>
+    </div>
+
+    <div>
+        <strong>Stay Organized</strong>
+        <p>
+            Update your application status regularly to keep your job search
+            progress accurate and organized.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

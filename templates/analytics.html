@@ -1,0 +1,294 @@
+
+{% extends "base.html" %}
+
+{% block title %}Analytics | JobTrack{% endblock %}
+
+{% block page_name %}Analytics{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Job Search Analytics</h1>
+        <p class="page-subtitle">
+            Analyze your application progress and track your performance.
+        </p>
+    </div>
+
+    <a href="{{ url_for('applications') }}" class="btn btn-primary">
+        <i data-lucide="files"></i>
+        View Applications
+    </a>
+</div>
+
+<!-- Overview Cards -->
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Total Applications</span>
+            <div class="stat-icon blue">
+                <i data-lucide="briefcase-business"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ total }}</div>
+        <div class="stat-footer">Total jobs applied</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Interview Rate</span>
+            <div class="stat-icon purple">
+                <i data-lucide="users"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ interview_rate }}<span>%</span></div>
+        <div class="stat-footer">Applications reaching interview</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Offer Rate</span>
+            <div class="stat-icon green">
+                <i data-lucide="trophy"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ offer_rate }}<span>%</span></div>
+        <div class="stat-footer">Applications resulting in offers</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-top">
+            <span class="stat-label">Offers Received</span>
+            <div class="stat-icon orange">
+                <i data-lucide="award"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ status_counts["Offer"] }}</div>
+        <div class="stat-footer">Successful outcomes</div>
+    </div>
+
+</div>
+
+<!-- Application Status Breakdown -->
+
+<div class="analytics-grid">
+
+    <div class="card">
+
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Application Status Breakdown</h2>
+                <p class="card-description">
+                    Distribution of your applications across all stages.
+                </p>
+            </div>
+        </div>
+
+        <div class="analytics-status-list">
+
+            {% for status_name, count in status_counts.items() %}
+
+            <div class="analytics-status-item">
+
+                <div class="analytics-status-header">
+
+                    <div class="analytics-status-label">
+
+                        {% if status_name == "Applied" %}
+                            <span class="pipeline-dot blue-dot"></span>
+                        {% elif status_name == "Assessment" %}
+                            <span class="pipeline-dot orange-dot"></span>
+                        {% elif status_name == "Interview" %}
+                            <span class="pipeline-dot purple-dot"></span>
+                        {% elif status_name == "Offer" %}
+                            <span class="pipeline-dot green-dot"></span>
+                        {% else %}
+                            <span class="pipeline-dot red-dot"></span>
+                        {% endif %}
+
+                        <strong>{{ status_name }}</strong>
+
+                    </div>
+
+                    <div class="analytics-status-numbers">
+
+                        <strong>{{ count }}</strong>
+
+                        <span>
+                            {% if total > 0 %}
+                                {{ ((count / total) * 100)|round(1) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-fill
+                        {% if status_name == 'Applied' %}blue-fill
+                        {% elif status_name == 'Assessment' %}orange-fill
+                        {% elif status_name == 'Interview' %}purple-fill
+                        {% elif status_name == 'Offer' %}green-fill
+                        {% else %}red-fill{% endif %}"
+
+                        data-progress="{% if total > 0 %}{{ (count / total) * 100 }}{% else %}0{% endif %}"
+                    >
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- Insights -->
+
+    <div class="card">
+
+        <div class="card-header">
+            <div>
+                <h2 class="card-title">Job Search Insights</h2>
+                <p class="card-description">
+                    A quick look at your current progress.
+                </p>
+            </div>
+
+            <div class="stat-icon purple">
+                <i data-lucide="lightbulb"></i>
+            </div>
+        </div>
+
+        <div class="insights-list">
+
+            <div class="insight-item">
+
+                <div class="insight-icon blue">
+                    <i data-lucide="send"></i>
+                </div>
+
+                <div>
+                    <strong>Application Activity</strong>
+                    <p>
+                        You have submitted {{ total }} application(s) so far.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="insight-item">
+
+                <div class="insight-icon purple">
+                    <i data-lucide="calendar-check"></i>
+                </div>
+
+                <div>
+                    <strong>Interview Progress</strong>
+                    <p>
+                        {{ status_counts["Interview"] }} application(s) have reached
+                        the interview stage.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="insight-item">
+
+                <div class="insight-icon green">
+                    <i data-lucide="trophy"></i>
+                </div>
+
+                <div>
+                    <strong>Offer Progress</strong>
+                    <p>
+                        You have received {{ status_counts["Offer"] }} offer(s).
+                        Keep working towards your goals!
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="insight-item">
+
+                <div class="insight-icon orange">
+                    <i data-lucide="target"></i>
+                </div>
+
+                <div>
+                    <strong>Keep Improving</strong>
+                    <p>
+                        Review your applications and interview preparation
+                        regularly to improve your job search strategy.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Funnel -->
+
+<div class="card">
+
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">Recruitment Funnel</h2>
+            <p class="card-description">
+                Understand how applications move through your job search.
+            </p>
+        </div>
+    </div>
+
+    <div class="funnel-list">
+
+        <div class="funnel-item">
+            <div class="funnel-stage">
+                <span class="pipeline-dot blue-dot"></span>
+                <span>Applications Submitted</span>
+            </div>
+            <strong>{{ total }}</strong>
+        </div>
+
+        <div class="funnel-item">
+            <div class="funnel-stage">
+                <span class="pipeline-dot orange-dot"></span>
+                <span>Assessments</span>
+            </div>
+            <strong>{{ status_counts["Assessment"] }}</strong>
+        </div>
+
+        <div class="funnel-item">
+            <div class="funnel-stage">
+                <span class="pipeline-dot purple-dot"></span>
+                <span>Interviews</span>
+            </div>
+            <strong>{{ status_counts["Interview"] }}</strong>
+        </div>
+
+        <div class="funnel-item">
+            <div class="funnel-stage">
+                <span class="pipeline-dot green-dot"></span>
+                <span>Offers</span>
+            </div>
+            <strong>{{ status_counts["Offer"] }}</strong>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
